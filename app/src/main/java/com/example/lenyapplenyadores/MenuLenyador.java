@@ -33,7 +33,6 @@ import java.util.ArrayList;
 public class MenuLenyador extends AppCompatActivity {
 
     Button btnAgregar, btnEditar, btnEntregas;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class MenuLenyador extends AppCompatActivity {
         btnEditar = (Button) findViewById(R.id.btnEditar);
         btnEntregas = (Button) findViewById(R.id.btnEntregas);
         SharedPreferences prefs = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
-        String correo = prefs.getString("correo", " ");//"No name defined" is the default value.
+        final String correo = prefs.getString("correo", " ");//"No name defined" is the default value.
         final int id = prefs.getInt("id", 0); //0 is the default value.
         final ArrayList<historialEnvios> listaHistorialEnvios = new ArrayList<historialEnvios>();
         final ArrayList<Proveedor> listaProveedor = new ArrayList<Proveedor>();
@@ -67,7 +66,7 @@ public class MenuLenyador extends AppCompatActivity {
                         try {
 
                             RequestQueue queue = Volley.newRequestQueue(MenuLenyador.this);
-                            String url ="http://84361097.ngrok.io/encontrarPedidos.php?idProv="+ id;
+                            String url ="http://9f44d8db.ngrok.io/encontrarPedidos.php?idProv="+ id;
 
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -111,8 +110,27 @@ public class MenuLenyador extends AppCompatActivity {
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     switch (which){
                                                         case DialogInterface.BUTTON_POSITIVE:
-                                                            newVerificado[0] = 1;
-                                                            cambiarValidado(idHistorial[0], newVerificado[0]);
+                                                            newVerificado[0] = 4;
+
+                                                            RequestQueue queue = Volley.newRequestQueue(MenuLenyador.this);
+                                                            String url ="http://9f44d8db.ngrok.io/actualizarValidado.php?validado="+ newVerificado[0] +"&idHistorial=" + idHistorial[0];
+
+                                                            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                                                    new Response.Listener<String>() {
+                                                                        @Override
+                                                                        public void onResponse(String response) {
+                                                                            // Display the first 500 characters of the response string.
+                                                                        }
+                                                                    }, new Response.ErrorListener() {
+                                                                @Override
+                                                                public void onErrorResponse(VolleyError error) {
+                                                                    Toast.makeText(MenuLenyador.this, "Error", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+
+                                                            queue.add(stringRequest);
+
+                                                            //cambiarValidado(idHistorial[0], newVerificado[0]);
                                                             Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                                                             i.putExtra("idHistorial", idHistorial[0]);
                                                             i.putExtra("idproveedor", idProveedor[0]);
@@ -177,7 +195,7 @@ public class MenuLenyador extends AppCompatActivity {
 
         try {
 
-            url = ("http://84361097.ngrok.io/encontrarPedidos.php?idProv="+ id);
+            url = ("http://9f44d8db.ngrok.io/encontrarPedidos.php?idProv="+ id);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();
@@ -210,7 +228,7 @@ public class MenuLenyador extends AppCompatActivity {
 
         try {
 
-            url = ("http://84361097.ngrok.io/actualizarValidado.php?validado="+ newVerificado +"&idHistorial=" + idHistorial);
+            url = ("http://9f44d8db.ngrok.io/actualizarValidado.php?validado="+ newVerificado +"&idHistorial=" + idHistorial);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();
@@ -228,6 +246,7 @@ public class MenuLenyador extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+            Log.e("app", "exception", e);
         }
     }
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,18 +16,30 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -35,12 +48,16 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -49,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String TAG = "MainActivity";
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
+    private ImageButton btnBrujula;
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     private LocationManager mLocationManager;
@@ -56,16 +74,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private com.google.android.gms.location.LocationListener listener;
     private long UPDATE_INTERVAL = 5000;  /* 10 secs */
     private long FASTEST_INTERVAL = 1000; /* 20 sec */
+    double latitude = 0;
+    double longitude = 0;
 
     private LocationManager locationManager;
     private LatLng latLng;
+    LatLng latLngUsuario;
+    private Marker marker;
+    private Marker marker2;
     private boolean isPermission;
+    boolean yaEjecutado = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        SharedPreferences prefs = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
+        String correo = prefs.getString("correo", " ");//"No name defined" is the default value.
+        final int id = prefs.getInt("id", 0); //0 is the default value.
         if (requestSinglePermission()) {
             // Obtain the SupportMapFragment and get notified when the map is ready to be used.
             //it was pre written
@@ -103,8 +129,89 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         if (latLng != null) {
-            mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in Current Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            if(marker==null){
+
+                MarkerOptions userIndicator = new MarkerOptions()
+                        .position(latLng)
+                        .title("Leñador")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.deliverytruck));
+                marker = googleMap.addMarker(userIndicator);
+
+                MarkerOptions userIndicator2 = new MarkerOptions()
+                        .position(latLngUsuario)
+                        .title("Usted")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
+                marker2 = googleMap.addMarker(userIndicator2);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(latLng);
+                builder.include(latLngUsuario);
+                final LatLngBounds bounds = builder.build();
+
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                mMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
+                    public void onCancel(){}
+                    public void onFinish(){
+                        CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -0.2);
+                        mMap.animateCamera(zout);
+                    }
+                });
+            }else {
+                marker.remove();
+                marker2.remove();
+                MarkerOptions userIndicator = new MarkerOptions()
+                        .position(latLng)
+                        .title("Leñador")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.deliverytruck));
+                marker = googleMap.addMarker(userIndicator);
+
+
+                MarkerOptions userIndicator2 = new MarkerOptions()
+                        .position(latLngUsuario)
+                        .title("Usted")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
+                marker2 = googleMap.addMarker(userIndicator2);
+
+            }
+            if(marker.isVisible() && marker2.isVisible()){
+                if(!yaEjecutado) {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(latLng);
+                    builder.include(latLngUsuario);
+                    final LatLngBounds bounds = builder.build();
+
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                    mMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
+                        public void onCancel(){}
+                        public void onFinish(){
+                            CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -0.2);
+                            mMap.animateCamera(zout);
+                        }
+                    });
+                    yaEjecutado= true;
+                }
+            }
+            btnBrujula = (ImageButton) findViewById(R.id.btnBrujula);
+            btnBrujula.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(latLng);
+                    builder.include(latLngUsuario);
+                    final LatLngBounds bounds = builder.build();
+
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                    mMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
+                        public void onCancel(){}
+                        public void onFinish(){
+                            CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -0.2);
+                            mMap.animateCamera(zout);
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -150,6 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
+        final ArrayList<Coordenadas> listaCoordenadas = new ArrayList<Coordenadas>();
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
@@ -159,6 +267,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle bundle = getIntent().getExtras();
         final int idHistorial = bundle.getInt("idHistorial");
         final int idProveedor = bundle.getInt("idproveedor");
+        latLngUsuario = new LatLng(latitude, longitude);
+        Location leñadorGEO = new Location(LocationManager.GPS_PROVIDER);
+        leñadorGEO.setLatitude(Double.parseDouble(latitudOut));
+        leñadorGEO.setLongitude(Double.parseDouble(longitudOut));
+        Location usuarioGEO = new Location(LocationManager.GPS_PROVIDER);
+        usuarioGEO.setLatitude(latitude);
+        usuarioGEO.setLongitude(longitude);
+        if(leñadorGEO.distanceTo(usuarioGEO) < 100) {
+            Intent i = new Intent(getApplicationContext(), TrackingRealizado.class);
+            i.putExtra("idHistorial", idHistorial);
+            i.putExtra("idProveedor", idProveedor);
+            startActivity(i);
+
+        }
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -179,7 +301,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         thread.start();
+        RequestQueue queue1 = Volley.newRequestQueue(this);
+        String url1 = "http://9f44d8db.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
 
+        // Request a string response from the provided URL.
+        StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+
+                        String resultadoCoordenadas = response;
+                        try {
+                            JSONObject jsonObjectCoordenadas = new JSONObject(resultadoCoordenadas);
+                            JSONArray jsonArrayCoordenadas = jsonObjectCoordenadas.getJSONArray("coordenadas");
+                            for (int x = 0; x < jsonArrayCoordenadas.length(); x++) {
+                                listaCoordenadas.add(new Coordenadas(jsonArrayCoordenadas.getJSONObject(x)));
+                            }
+
+
+                        } catch (Exception e) {
+                            Log.e("app", "exception", e);
+                        }
+                        try {
+
+                            for (int i = 0; i < listaCoordenadas.size(); i++) {
+
+                                String lat_usu = listaCoordenadas.get(i).getLat_usu();
+                                String long_usu = listaCoordenadas.get(i).getLong_usu();
+                                latitude = Double.parseDouble(lat_usu);
+                                longitude = Double.parseDouble(long_usu);
+
+                                latLngUsuario = new LatLng(latitude, longitude);
+                                Toast.makeText(MapsActivity.this, "Localizacion cambiada Usuario", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        } catch (Exception e) {
+                            Log.e("app", "exception", e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MapsActivity.this, "Fallo Inesperado", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue1.add(stringRequest1);
 
 
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -305,7 +475,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
 
 
-            url = ("http://84361097.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
+            url = ("http://9f44d8db.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();
