@@ -70,7 +70,8 @@ public class TrackingRealizado extends AppCompatActivity {
                 public void run() {
                     try{
                     RequestQueue queue = Volley.newRequestQueue(TrackingRealizado.this);
-                    String url ="http://9f44d8db.ngrok.io/seleccionarHistorial.php?idHistorial="+ idHistorial;
+                    String url ="http://97899ef5.ngrok.io/seleccionarHistorial.php?idHistorial="+ idHistorial;
+
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
@@ -118,7 +119,7 @@ public class TrackingRealizado extends AppCompatActivity {
                                         case DialogInterface.BUTTON_POSITIVE:
                                             int pago = 1;
                                             RequestQueue queue = Volley.newRequestQueue(TrackingRealizado.this);
-                                            String url ="http://9f44d8db.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pago;
+                                            String url ="http://97899ef5.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pago;
 
                                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                                     new Response.Listener<String>() {
@@ -146,7 +147,7 @@ public class TrackingRealizado extends AppCompatActivity {
                                         case DialogInterface.BUTTON_NEGATIVE:
                                             int pagoo = 3;
                                             RequestQueue queue1 = Volley.newRequestQueue(TrackingRealizado.this);
-                                            String url1 ="http://9f44d8db.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pagoo;
+                                            String url1 ="http://97899ef5.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pagoo;
 
                                             StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
                                                     new Response.Listener<String>() {

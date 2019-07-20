@@ -240,27 +240,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
             //mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
         } else {
-            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Localizacion no detectada", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Connection Suspended");
+        Log.i(TAG, "Conexion suspendida");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
+        Log.i(TAG, "Conexion fallida. Error: " + connectionResult.getErrorCode());
     }
 
     @Override
     public void onLocationChanged(Location location) {
         final ArrayList<Coordenadas> listaCoordenadas = new ArrayList<Coordenadas>();
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
         final String latitudOut = String.valueOf(location.getLatitude());
         final String longitudOut = String.valueOf(location.getLongitude());
 
@@ -302,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
         thread.start();
         RequestQueue queue1 = Volley.newRequestQueue(this);
-        String url1 = "http://9f44d8db.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
+        String url1 = "http://97899ef5.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
@@ -333,7 +330,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 longitude = Double.parseDouble(long_usu);
 
                                 latLngUsuario = new LatLng(latitude, longitude);
-                                Toast.makeText(MapsActivity.this, "Localizacion cambiada Usuario", Toast.LENGTH_SHORT).show();
 
 
                             }
@@ -352,7 +348,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         queue1.add(stringRequest1);
 
 
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -409,10 +404,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+        dialog.setTitle("Habilitar localizacion")
+                .setMessage("Tienes tu localizacion de tu movil apagada.\nPor favor habilitala para " +
+                        "usar esta aplicacion")
+                .setPositiveButton("Configuraciones de locaclizacion",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
 
@@ -420,7 +415,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(myIntent);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
 
@@ -443,7 +438,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         //Single Permission is granted
-                        Toast.makeText(MapsActivity.this, "Single permission is granted!", Toast.LENGTH_SHORT).show();
                         isPermission = true;
                     }
 
@@ -475,7 +469,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
 
 
-            url = ("http://9f44d8db.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
+            url = ("http://97899ef5.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();

@@ -19,8 +19,8 @@
         android:id="@+id/btnBrujula"
         android:layout_width="62dp"
         android:layout_height="60dp"
-        android:layout_marginLeft="850px"
-        android:layout_marginTop="95px"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="20dp"
         android:background="@android:color/transparent"
         android:src="@drawable/compass" />
 </FrameLayout>

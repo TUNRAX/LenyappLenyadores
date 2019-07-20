@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (user.equals("") || pass.equals("")) {
                     Toast.makeText(getApplicationContext(), "Rellene los campos nesesarios", Toast.LENGTH_SHORT).show();
-                } else if (rol == 2) {
+                } else if (rol == 3) {
                     final JSONObject userJson1 = new JSONObject();
                     try {
                         userJson1.put("user", user);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     String jsonString1 = userJson1.toString();
-                    String url1 = "http://9f44d8db.ngrok.io/login.php";
+                    String url1 = "http://97899ef5.ngrok.io/login.php";
                     try {
                         Back ejec = new Back(new Back.AsyncResponse() {
                             @Override
@@ -116,12 +116,13 @@ public class MainActivity extends AppCompatActivity {
                                         contrasenya = listaUsuario.get(i).getContrasenya();
                                     }
                                     correo[0] = correoInterno;
+                                    String passEncriptada = AeSimpleSHA1.SHA1(pass);
                                     for (int i = 0; i < listaUsuario.size(); i++) {
                                         idUsuario = listaUsuario.get(i).getId();
                                     }
                                     id[0] = idUsuario;
                                     //comparamos los campos
-                                    if (user.equals(correoInterno) && pass.equals(contrasenya)) {
+                                    if (user.equals(correoInterno) && passEncriptada.equals(contrasenya)) {
                                         loginOk[0] = true;
                                         if (loginOk[0]) {
                                             try {
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            url = new URL("http://9f44d8db.ngrok.io/checkearRol.php?correo=" + user
+            url = new URL("http://97899ef5.ngrok.io/checkearRol.php?correo=" + user
                     + "&contrasenya=" + pass);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             respuesta = connection.getResponseCode();
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            url = new URL("http://9f44d8db.ngrok.io/checkearRol.php?correo=" + user
+            url = new URL("http://97899ef5.ngrok.io/checkearRol.php?correo=" + user
                     + "&contrasenya=" + pass);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             respuesta = connection.getResponseCode();
