@@ -133,13 +133,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 MarkerOptions userIndicator = new MarkerOptions()
                         .position(latLng)
-                        .title("Leñador")
+                        .title("Usted")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.deliverytruck));
                 marker = googleMap.addMarker(userIndicator);
 
                 MarkerOptions userIndicator2 = new MarkerOptions()
                         .position(latLngUsuario)
-                        .title("Usted")
+                        .title("Cliente")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
                 marker2 = googleMap.addMarker(userIndicator2);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -163,14 +163,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 marker2.remove();
                 MarkerOptions userIndicator = new MarkerOptions()
                         .position(latLng)
-                        .title("Leñador")
+                        .title("Usted")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.deliverytruck));
                 marker = googleMap.addMarker(userIndicator);
 
 
                 MarkerOptions userIndicator2 = new MarkerOptions()
                         .position(latLngUsuario)
-                        .title("Usted")
+                        .title("Cliente")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
                 marker2 = googleMap.addMarker(userIndicator2);
 
@@ -299,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
         thread.start();
         RequestQueue queue1 = Volley.newRequestQueue(this);
-        String url1 = "http://97899ef5.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
+        String url1 = "http://e9eec324.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
@@ -469,7 +469,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
 
 
-            url = ("http://97899ef5.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
+            url = ("http://e9eec324.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();

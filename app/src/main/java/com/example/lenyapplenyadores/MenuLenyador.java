@@ -74,7 +74,7 @@ public class MenuLenyador extends AppCompatActivity {
                         try {
 
                             RequestQueue queue = Volley.newRequestQueue(MenuLenyador.this);
-                            String url = "http://97899ef5.ngrok.io/encontrarPedidos.php?idProv=" + id;
+                            String url = "http://e9eec324.ngrok.io/encontrarPedidos.php?idProv=" + id;
 
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -121,7 +121,7 @@ public class MenuLenyador extends AppCompatActivity {
                                                 newVerificado[0] = 4;
 
                                                 RequestQueue queue = Volley.newRequestQueue(MenuLenyador.this);
-                                                String url = "http://97899ef5.ngrok.io/actualizarValidado.php?validado=" + newVerificado[0] + "&idHistorial=" + idHistorial[0];
+                                                String url = "http://e9eec324.ngrok.io/actualizarValidado.php?validado=" + newVerificado[0] + "&idHistorial=" + idHistorial[0];
 
                                                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                                         new Response.Listener<String>() {
@@ -149,7 +149,7 @@ public class MenuLenyador extends AppCompatActivity {
                                             case DialogInterface.BUTTON_NEGATIVE:
                                                 newVerificado[0] = 2;
                                                 RequestQueue queue1 = Volley.newRequestQueue(MenuLenyador.this);
-                                                String url1 = "http://97899ef5.ngrok.io/actualizarValidado.php?validado=" + newVerificado[0] + "&idHistorial=" + idHistorial[0];
+                                                String url1 = "http://e9eec324.ngrok.io/actualizarValidado.php?validado=" + newVerificado[0] + "&idHistorial=" + idHistorial[0];
 
                                                 StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
                                                         new Response.Listener<String>() {
@@ -220,7 +220,7 @@ public class MenuLenyador extends AppCompatActivity {
 
         try {
 
-            url = ("http://97899ef5.ngrok.io/encontrarPedidos.php?idProv=" + id);
+            url = ("http://e9eec324.ngrok.io/encontrarPedidos.php?idProv=" + id);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();
@@ -253,7 +253,7 @@ public class MenuLenyador extends AppCompatActivity {
 
         try {
 
-            url = ("http://97899ef5.ngrok.io/actualizarValidado.php?validado=" + newVerificado + "&idHistorial=" + idHistorial);
+            url = ("http://e9eec324.ngrok.io/actualizarValidado.php?validado=" + newVerificado + "&idHistorial=" + idHistorial);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();
