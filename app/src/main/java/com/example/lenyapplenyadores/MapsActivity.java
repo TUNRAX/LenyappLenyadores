@@ -299,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
         thread.start();
         RequestQueue queue1 = Volley.newRequestQueue(this);
-        String url1 = "http://e9eec324.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
+        String url1 = "http://865e33a1.sa.ngrok.io/selectTrackingUsuario.php?idHistorial="+ idHistorial;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
@@ -469,7 +469,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
 
 
-            url = ("http://e9eec324.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
+            url = ("http://865e33a1.sa.ngrok.io/trackingProveedor.php?idHistorial="+ idHistorial +"&idProv="+ idProveedor +"&lat="+ latitud +"&long="+ longitud);
             url = url.replaceAll(" ", "%20");
             URL sourceUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) sourceUrl.openConnection();

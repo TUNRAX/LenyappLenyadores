@@ -39,7 +39,7 @@ public class TrackingRealizado extends AppCompatActivity {
     final ArrayList<Proveedor> listaProveedor = new ArrayList<Proveedor>();
     final int[] finalizar = {0};
     final int[] verificado = {0};
-    String tipoDePago = "";
+    int tipoDePago = 0;
     int pago = 0;
     final boolean[] isPaused = {true};
     final int[] newVerificado = {0};
@@ -70,7 +70,7 @@ public class TrackingRealizado extends AppCompatActivity {
                 public void run() {
                     try{
                     RequestQueue queue = Volley.newRequestQueue(TrackingRealizado.this);
-                    String url ="http://e9eec324.ngrok.io/seleccionarHistorial.php?idHistorial="+ idHistorial;
+                    String url ="http://865e33a1.sa.ngrok.io/seleccionarHistorial.php?idHistorial="+ idHistorial;
 
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -106,11 +106,11 @@ public class TrackingRealizado extends AppCompatActivity {
                     for (int i = 0; i < listaHistorialEnvios.size(); i++) {
                         verificado[0] = listaHistorialEnvios.get(i).getValidado();
                         pago = listaHistorialEnvios.get(i).getPagado();
-                        tipoDePago = listaHistorialEnvios.get(i).getTipoDeCompra();
+                        tipoDePago = listaHistorialEnvios.get(i).getTipoDeCompraId();
                     }
 
 
-                        if ((verificado[0] == 1 && pago == 2 && tipoDePago.equals("efectivo")) || (verificado[0] == 1 && pago == 3 && tipoDePago.equals("efectivo"))) {
+                        if ((verificado[0] == 1 && pago == 2 && tipoDePago == 2) || (verificado[0] == 1 && pago == 3 && tipoDePago == 2)) {
                             isPaused[0] = true;
                             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                 @Override
@@ -119,7 +119,7 @@ public class TrackingRealizado extends AppCompatActivity {
                                         case DialogInterface.BUTTON_POSITIVE:
                                             int pago = 1;
                                             RequestQueue queue = Volley.newRequestQueue(TrackingRealizado.this);
-                                            String url ="http://e9eec324.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pago;
+                                            String url ="http://865e33a1.sa.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pago;
 
                                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                                     new Response.Listener<String>() {
@@ -147,7 +147,7 @@ public class TrackingRealizado extends AppCompatActivity {
                                         case DialogInterface.BUTTON_NEGATIVE:
                                             int pagoo = 3;
                                             RequestQueue queue1 = Volley.newRequestQueue(TrackingRealizado.this);
-                                            String url1 ="http://e9eec324.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pagoo;
+                                            String url1 ="http://865e33a1.sa.ngrok.io/actualizarPago.php?idHistorial="+ idHistorial + "&pago="+ pagoo;
 
                                             StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
                                                     new Response.Listener<String>() {
@@ -176,7 +176,7 @@ public class TrackingRealizado extends AppCompatActivity {
                             builder.setMessage("¿Recibio el pago?").setPositiveButton("Si", dialogClickListener)
                                     .setNegativeButton("No", dialogClickListener).show();
 
-                        } else if(verificado[0] == 1 && tipoDePago.equals("khipu")) {
+                        } else if(verificado[0] == 1 && tipoDePago == 1) {
                             if(pago == 1){
                                 Toast.makeText(TrackingRealizado.this, "Pago realizado por tarjeta", Toast.LENGTH_SHORT).show();
                                 finalizar[0] = 1;

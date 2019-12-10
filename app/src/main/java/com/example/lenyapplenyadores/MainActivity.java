@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     String jsonString1 = userJson1.toString();
-                    String url1 = "http://e9eec324.ngrok.io/login.php";
+                    String url1 = "http://865e33a1.sa.ngrok.io/login.php";
                     try {
                         Back ejec = new Back(new Back.AsyncResponse() {
                             @Override
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            url = new URL("http://e9eec324.ngrok.io/checkearRol.php?correo=" + user
+            url = new URL("http://865e33a1.sa.ngrok.io/checkearRol.php?correo=" + user
                     + "&contrasenya=" + pass);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             respuesta = connection.getResponseCode();
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            url = new URL("http://e9eec324.ngrok.io/checkearRol.php?correo=" + user
+            url = new URL("http://865e33a1.sa.ngrok.io/checkearRol.php?correo=" + user
                     + "&contrasenya=" + pass);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             respuesta = connection.getResponseCode();
